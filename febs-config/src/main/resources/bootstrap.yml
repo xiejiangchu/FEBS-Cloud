@@ -1,0 +1,49 @@
+server:
+  port: 8501
+spring:
+  application:
+    name: FEBS-Config
+  boot:
+    admin:
+      client:
+        url: http://${febs-monitor-admin}:8401
+        username: febs
+        password: 123456
+
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: 您的git仓库链接
+          search-paths: /config/
+          username: 您的git仓库用户名
+          password: 您的git仓库密码
+          clone-on-start: true
+
+eureka:
+  instance:
+    lease-renewal-interval-in-seconds: 20
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    instance-info-replication-interval-seconds: 30
+    registry-fetch-interval-seconds: 3
+    serviceUrl:
+      defaultZone: http://febs:123456@${febs-register}:8001/register/eureka/
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: "@project.description@"
+    version: "@project.version@"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS

@@ -1,0 +1,46 @@
+server:
+  port: 8001
+  servlet:
+    context-path: /register
+
+spring:
+  application:
+    name: FEBS-Register
+  boot:
+    admin:
+      client:
+        url: http://${febs-monitor-admin}:8401
+        username: febs
+        password: 123456
+  security:
+    user:
+      name: febs
+      password: 123456
+
+eureka:
+  instance:
+    hostname: ${febs-register}
+    lease-renewal-interval-in-seconds: 20
+    lease-expiration-duration-in-seconds: 60
+    prefer-ip-address: true
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    instance-info-replication-interval-seconds: 30
+    serviceUrl:
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@${eureka.instance.hostname}:${server.port}${server.servlet.context-path}/eureka/
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: "@project.description@"
+    version: "@project.version@"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
