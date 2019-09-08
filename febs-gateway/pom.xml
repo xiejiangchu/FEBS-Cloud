@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>cc.mrbird</groupId>
+        <artifactId>febs-cloud</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../febs-cloud/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>febs-gateway</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>FEBS-Gateway</name>
+    <description>FEBS-Gateway服务网关模块</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>cc.mrbird</groupId>
+            <artifactId>febs-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-zuul-adapter</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>6.1</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

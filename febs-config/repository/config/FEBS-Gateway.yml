@@ -1,0 +1,57 @@
+spring:
+  boot:
+    admin:
+      client:
+        url: http://${febs-monitor-admin}:8401
+        username: febs
+        password: 123456
+  mvc:
+    throw-exception-if-no-handler-found: true
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+zuul:
+  routes:
+    auth:
+      path: /auth/**
+      serviceId: FEBS-Auth
+      sensitiveHeaders: "*"
+    system:
+      path: /system/**
+      serviceId: FEBS-Server-System
+      sensitiveHeaders: "*"
+    test:
+      path: /test/**
+      serviceId: FEBS-Server-Test
+      sensitiveHeaders: "*"
+  retryable: false
+  ignored-services: "*"
+  ribbon:
+    eager-load:
+      enabled: true
+  host:
+    connect-timeout-millis: 5000
+    socket-timeout-millis: 5000
+  add-proxy-headers: true
+
+  SendErrorFilter:
+    error:
+      disable: true
+
+ribbon:
+  ConnectTimeout: 3000
+  ReadTimeout: 5000
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: "@project.description@"
+    version: "@project.version@"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS

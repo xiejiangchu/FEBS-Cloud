@@ -1,0 +1,119 @@
+version: '3'
+
+services:
+  febs-register:
+    image: febs-register:latest
+    container_name: febs-register
+    volumes:
+      - "/febs/log:/log"
+    command:
+      - "--febs-monitor-admin=127.0.0.1"
+      - "--febs-register=127.0.0.1"
+    ports:
+      - 8001:8001
+    restart: always
+  febs-config:
+    image: febs-config:latest
+    container_name: febs-config
+    depends_on:
+      - febs-register
+    volumes:
+      - "/febs/log:/log"
+    command:
+      - "--febs-monitor-admin=127.0.0.1"
+      - "--febs-register=127.0.0.1"
+    ports:
+      - 8501:8501
+    restart: always
+  febs-monitor-admin:
+    image: febs-monitor-admin:latest
+    container_name: febs-monitor-admin
+    volumes:
+      - "/febs/log:/log"
+    ports:
+      - 8401:8401
+    restart: always
+  febs-gateway:
+    image: febs-gateway:latest
+    container_name: febs-gateway
+    depends_on:
+      - febs-config
+      - febs-register
+    volumes:
+      - "/febs/log:/log"
+    command:
+      - "--febs-monitor-admin=127.0.0.1"
+      - "--febs-register=127.0.0.1"
+    ports:
+      - 8301:8301
+    restart: always
+  febs-auth:
+    image: febs-auth:latest
+    container_name: febs-auth
+    depends_on:
+      - febs-config
+      - febs-register
+    volumes:
+      - "/febs/log:/log"
+    command:
+      - "--febs-monitor-admin=127.0.0.1"
+      - "--febs-register=127.0.0.1"
+      - "--mysql.url=127.0.0.1"
+      - "--redis.url=127.0.0.1"
+      - "--spring.profiles.active=prod"
+    restart: always
+  febs-server-system:
+    image: febs-server-system:latest
+    container_name: febs-server-system
+    depends_on:
+      - febs-register
+      - febs-config
+    volumes:
+      - "/febs/log:/log"
+    command:
+      - "--febs-monitor-admin=127.0.0.1"
+      - "--febs-register=127.0.0.1"
+      - "--febs-gateway=127.0.0.1"
+      - "--mysql.url=127.0.0.1"
+      - "--rabbitmq.url=127.0.0.1"
+      - "--spring.profiles.active=prod"
+    restart: always
+  febs-server-test:
+    image: febs-server-test:latest
+    container_name: febs-server-test
+    depends_on:
+      - febs-config
+      - febs-register
+    volumes:
+      - "/febs/log:/log"
+    command:
+      - "--rabbitmq.url=127.0.0.1"
+      - "--febs-monitor-admin=127.0.0.1"
+      - "--febs-register=127.0.0.1"
+      - "--febs-gateway=127.0.0.1"
+    restart: always
+  zipkin-server:
+    image: zipkin-server
+    container_name: zipkin-server
+    command:
+      - "--server.port=8402"
+      - "--zipkin.storage.type=mysql"
+      - "--zipkin.storage.mysql.db=febs_cloud_base"
+      - "--zipkin.storage.mysql.username=root"
+      - "--zipkin.storage.mysql.password=123456"
+      - "--zipkin.storage.mysql.host=127.0.0.1"
+      - "--zipkin.storage.mysql.port=3306"
+      - "--zipkin.collector.rabbitmq.addresses=127.0.0.1:5672"
+      - "--zipkin.collector.rabbitmq.username=febs"
+      - "--zipkin.collector.rabbitmq.password=123456"
+    ports:
+      - 8402:8402
+    restart: always
+  febs-clou-web:
+    image: febs-cloud-web
+    container_name: febs-cloud-web
+    volumes:
+      - "/febs/log:/log"
+    ports:
+      - 9527:80
+    restart: always
